@@ -1,11 +1,11 @@
 const board = document.getElementById('board');
 const status = document.getElementById('status');
 // currentPlayer set as let to be able to toggle between X and O
-let currentPlayer = 'O'; //starts with player O
+let currentPlayer = 'O';
 const gameBoard = Array(9).fill(null);
 const cells = []; // Store cell references
-const xgames = []; //stores all X games
-const ogames = []; //stores all O games
+const xgames = [];
+const ogames = [];
 
 const WIN_PATTERNS = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -24,20 +24,21 @@ function handleClick(index) {
             // If cell is empty, place an X inside the clicked cell
             if (cell.textContent === '') {
                 cell.textContent = currentPlayer;
-                console.log('INDEX:', index);
                 console.log('Cell clicked:', cell.textContent);
                 console.log('Cell clicked:', cell.id);
-                let cellNumber = parseInt(cell.id.split('-')[1]);
+                let cellNumber = cell.id.split('-')[1];
                 console.log('Cell number:', cellNumber);
 
-                //Store the corrent play in an array for each player
+                //swap players turn
                 if (currentPlayer === 'X') {
                     xgames.push(cellNumber);
                     console.log('Xgames:', xgames);
+                    currentPlayer = 'O';
                 }
                 else if (currentPlayer === 'O') {
                     ogames.push(cellNumber);
                     console.log('Ogames:', ogames);
+                    currentPlayer = 'X';
                 }
 
                 //check if there's a winner
@@ -55,22 +56,17 @@ function handleClick(index) {
                         isOWinner = true;
                         break; // If O wins, no need to check further
                     }
-                }
 
-                if (isXWinner) {
-                    console.log("X won");
-                }
-                else if (isOWinner) {
-                    console.log("O won");
-                }
+                    if (isXWinner) {
+                        console.log("X won");
+                    }
+                    else if (isOWinner) {
+                        console.log("O won");
+                    }
 
-                else if (!isXWinner && !isOWinner) {
-                    console.log("No one won yet");
-
-                    //if no one won yet, swap players
-                    console.log("Curren Player", currentPlayer);
-                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                    console.log("Curren Player after swop", currentPlayer);
+                    if (!isXWinner && !isOWinner) {
+                        console.log("No one won yet");
+                    }
                 }
 
 
