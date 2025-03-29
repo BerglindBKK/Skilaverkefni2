@@ -40,42 +40,8 @@ function handleClick(index) {
                     console.log('Ogames:', ogames);
                 }
 
-                //check if there's a winner
-                let isXWinner = false;
-                let isOWinner = false;
-
-                for (let i = 0; i < WIN_PATTERNS.length; i++) {
-
-                    if (WIN_PATTERNS[i].every(position => xgames.includes(position))) {
-                        isXWinner = true;
-                        break; // If X wins, no need to check further
-                    }
-                    // Check if O has won for this pattern
-                    if (WIN_PATTERNS[i].every(position => ogames.includes(position))) {
-                        isOWinner = true;
-                        break; // If O wins, no need to check further
-                    }
-                }
-
-                if (isXWinner) {
-                    console.log("X won");
-                }
-                else if (isOWinner) {
-                    console.log("O won");
-                }
-
-                else if (!isXWinner && !isOWinner) {
-                    console.log("No one won yet");
-
-                    //if no one won yet, swap players
-                    console.log("Curren Player", currentPlayer);
-                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                    console.log("Curren Player after swop", currentPlayer);
-                }
-
-
+                checkWinner()
             }
-
 
         });
     });
@@ -83,13 +49,59 @@ function handleClick(index) {
 }
 
 function checkWinner() {
-    // Loop through the cells and check if any win pattern matches with the board for a single player
+    //check if there's a winner
+    let isXWinner = false;
+    let isOWinner = false;
+
+    for (let i = 0; i < WIN_PATTERNS.length; i++) {
+
+        if (WIN_PATTERNS[i].every(position => xgames.includes(position))) {
+            isXWinner = true;
+            break; // If X wins, no need to check further
+        }
+        // Check if O has won for this pattern
+        if (WIN_PATTERNS[i].every(position => ogames.includes(position))) {
+            isOWinner = true;
+            break; // If O wins, no need to check further
+        }
+    }
+
+    if (isXWinner) {
+        console.log("X won");
+    }
+    else if (isOWinner) {
+        console.log("O won");
+    }
+
+    else if (!isXWinner && !isOWinner) {
+        console.log("No one won yet");
+
+        //if no one won yet, swap players
+        console.log("Curren Player", currentPlayer);
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        console.log("Curren Player after swop", currentPlayer);
+    }
     return false;
+
 }
 
 
 function resetGame() {
     // Reset the board, allowing for a new game to be played
+    xgames.length = 0; // Clear the array
+    console.log("xgames", xgames); // []
+    ogames.length = 0; // Clear the array
+    console.log("ogames", ogames); // []
+
+
+
+    cells.forEach(cell => {
+        cell.textContent = ''; // Clears the content of the cell
+    });
+
+    currentPlayer = 'O';
+    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
+
 }
 
 //creates a board 
