@@ -1,3 +1,9 @@
+// TODO: Implement a function that when a cell of index is pressed, fills it with the symbol of the player whose turn it is,  - CHECK
+// TODO: and check if there's a winner. - CHECK
+// TODO: If there is no winner, swap player's turn -CHECK
+// TODO: Loop through the cells and check if any win pattern matches with the board for a single player - CHECK
+// TODO: Reset the board, allowing for a new game to be played - CHECK
+
 const board = document.getElementById('board');
 const status = document.getElementById('status');
 
@@ -16,45 +22,32 @@ const WIN_PATTERNS = [
 ];
 
 function handleClick(index) {
-    if (gameOver) return;
 
+    if (gameOver) return;
     const cell = cells[index];
-    // TODO: Implement a function that when a cell of index is pressed, fills it with the symbol of the player whose turn it is,  - CHECK
-    // TODO: and check if there's a winner. - CHECK
-    // TODO: If there is no winner, swap player's turn -CHECK
 
     // If cell is empty, place the current players symbol inside the clicked cell
     if (cell.textContent === '') {
         cell.textContent = currentPlayer;
-        console.log('INDEX:', index);
-        console.log('Cell clicked:', cell.textContent);
-        console.log('Cell clicked:', cell.id);
-        let cellNumber = index;
-        console.log('Cell number:', cellNumber);
 
         //Store the corrent play in an array for each player to later comapre to winner patterns
         if (currentPlayer === 'X') {
-            xgames.push(cellNumber);
-            console.log('Xgames:', xgames);
+            xgames.push(index);
         }
         else if (currentPlayer === 'O') {
-            ogames.push(cellNumber);
-            console.log('Ogames:', ogames);
+            ogames.push(index);
         }
 
         //check if there is alredy a winner
         const winner = checkWinner();
-        console.log("Check winner: ", winner);
 
         //if yes, then log "won", end game and disable cells otherwise swap players
         if (winner) {
-            console.log(`${currentPlayer} won!`);
             gameOver = true;
             disableCells();
             document.getElementById('status').textContent = `Player ${currentPlayer} won!`;
         } else {
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            console.log("Next player: ", currentPlayer);
         }
     }
 }
@@ -63,7 +56,7 @@ function handleClick(index) {
 // Disable the click events on all cells after winner is determined
 function disableCells() {
     cells.forEach(cell => {
-        cell.removeEventListener('click', handleClick);
+        cell.removeEventListener('click', handleClick); //removes event listener
         cell.style.pointerEvents = 'none'; //disable all mouse events in the cells
     });
 }
@@ -84,42 +77,23 @@ function checkWinner() {
         }
     }
 
-    if (isXWinner) {
-        console.log("X won");
-    }
-    else if (isOWinner) {
-        console.log("O won");
-    }
-
-    // else if (!isXWinner && !isOWinner) {
-    //     console.log("No one won yet");
-
-    //     //if no one won yet, swap players
-    //     console.log("Curren Player", currentPlayer);
-    //     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    //     console.log("Curren Player after swop", currentPlayer);
-    // }
     return isXWinner || isOWinner; //function returns true when either one is a winner
 
 }
 
-// Reset the board, allowing for a new game to be played
+
 function resetGame() {
     gameOver = false;
     currentPlayer = 'O';
     xgames.length = 0; // Clear the array
-    console.log("xgames", xgames);
     ogames.length = 0; // Clear the array
-    console.log("ogames", ogames);
 
     cells.forEach(cell => {
         cell.textContent = ''; // Clears the content of the cell
         cell.style.pointerEvents = 'auto'; // Re-enable mouse events
     });
 
-
-    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
-
+    document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`; //visual : whos turn is it
 }
 
 //creates a board 
