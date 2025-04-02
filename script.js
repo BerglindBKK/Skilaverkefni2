@@ -1,11 +1,13 @@
 const board = document.getElementById('board');
 const status = document.getElementById('status');
+
 // currentPlayer set as let to be able to toggle between X and O
 let currentPlayer = 'O'; //starts with player O
 const gameBoard = Array(9).fill(null);
 const cells = []; // Store cell references
 const xgames = []; //stores all X games
 const ogames = []; //stores all O games
+let gameOver = false; //keeps track of the state of the game
 
 const WIN_PATTERNS = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -14,52 +16,68 @@ const WIN_PATTERNS = [
 ];
 
 function handleClick(index) {
-    // TODO: Implement a function that when a cell of index is pressed, fills it with the symbol
-    // TODO: of the player whose turn it is, and check if there's a winner.
-    // TODO: If there is no winner, swap player's turn
+    if (gameOver) return;
 
-    // Add a click event listener to check for a click
-    cells.forEach(cell => {
-        cell.addEventListener('click', function () {
-            // If cell is empty, place an X inside the clicked cell
-            if (cell.textContent === '') {
-                cell.textContent = currentPlayer;
-                console.log('INDEX:', index);
-                console.log('Cell clicked:', cell.textContent);
-                console.log('Cell clicked:', cell.id);
-                let cellNumber = parseInt(cell.id.split('-')[1]);
-                console.log('Cell number:', cellNumber);
+    const cell = cells[index];
+    // TODO: Implement a function that when a cell of index is pressed, fills it with the symbol of the player whose turn it is,  - CHECK
+    // TODO: and check if there's a winner. - CHECK
+    // TODO: If there is no winner, swap player's turn -CHECK
 
-                //Store the corrent play in an array for each player
-                if (currentPlayer === 'X') {
-                    xgames.push(cellNumber);
-                    console.log('Xgames:', xgames);
-                }
-                else if (currentPlayer === 'O') {
-                    ogames.push(cellNumber);
-                    console.log('Ogames:', ogames);
-                }
+    // If cell is empty, place the current players symbol inside the clicked cell
+    if (cell.textContent === '') {
+        cell.textContent = currentPlayer;
+        console.log('INDEX:', index);
+        console.log('Cell clicked:', cell.textContent);
+        console.log('Cell clicked:', cell.id);
+        let cellNumber = index;
+        console.log('Cell number:', cellNumber);
 
-                checkWinner()
-            }
+        //Store the corrent play in an array for each player to later comapre to winner patterns
+        if (currentPlayer === 'X') {
+            xgames.push(cellNumber);
+            console.log('Xgames:', xgames);
+        }
+        else if (currentPlayer === 'O') {
+            ogames.push(cellNumber);
+            console.log('Ogames:', ogames);
+        }
 
-        });
-    });
+        //check if there is alredy a winner
+        const winner = checkWinner();
+        console.log("Check winner: ", winner);
 
+        //if yes, then log "won", end game and disable cells otherwise swap players
+        if (winner) {
+            console.log(`${currentPlayer} won!`);
+            gameOver = true;
+            disableCells();
+            document.getElementById('status').textContent = `Player ${currentPlayer} won!`;
+        } else {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            console.log("Next player: ", currentPlayer);
+        }
+    }
 }
 
+
+// Disable the click events on all cells after winner is determined
+function disableCells() {
+    cells.forEach(cell => {
+        cell.removeEventListener('click', handleClick);
+        cell.style.pointerEvents = 'none'; //disable all mouse events in the cells
+    });
+}
+
+//check if there's a winner
 function checkWinner() {
-    //check if there's a winner
     let isXWinner = false;
     let isOWinner = false;
 
     for (let i = 0; i < WIN_PATTERNS.length; i++) {
-
         if (WIN_PATTERNS[i].every(position => xgames.includes(position))) {
             isXWinner = true;
             break; // If X wins, no need to check further
         }
-        // Check if O has won for this pattern
         if (WIN_PATTERNS[i].every(position => ogames.includes(position))) {
             isOWinner = true;
             break; // If O wins, no need to check further
@@ -73,33 +91,33 @@ function checkWinner() {
         console.log("O won");
     }
 
-    else if (!isXWinner && !isOWinner) {
-        console.log("No one won yet");
+    // else if (!isXWinner && !isOWinner) {
+    //     console.log("No one won yet");
 
-        //if no one won yet, swap players
-        console.log("Curren Player", currentPlayer);
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        console.log("Curren Player after swop", currentPlayer);
-    }
-    return false;
+    //     //if no one won yet, swap players
+    //     console.log("Curren Player", currentPlayer);
+    //     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    //     console.log("Curren Player after swop", currentPlayer);
+    // }
+    return isXWinner || isOWinner; //function returns true when either one is a winner
 
 }
 
-
+// Reset the board, allowing for a new game to be played
 function resetGame() {
-    // Reset the board, allowing for a new game to be played
+    gameOver = false;
+    currentPlayer = 'O';
     xgames.length = 0; // Clear the array
-    console.log("xgames", xgames); // []
+    console.log("xgames", xgames);
     ogames.length = 0; // Clear the array
-    console.log("ogames", ogames); // []
-
-
+    console.log("ogames", ogames);
 
     cells.forEach(cell => {
         cell.textContent = ''; // Clears the content of the cell
+        cell.style.pointerEvents = 'auto'; // Re-enable mouse events
     });
 
-    currentPlayer = 'O';
+
     document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`;
 
 }
