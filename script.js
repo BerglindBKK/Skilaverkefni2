@@ -38,10 +38,9 @@ function handleClick(index) {
             ogames.push(index);
         }
 
-        //check if there is alredy a winner
         const winner = checkWinner();
 
-        //if yes, then log "won", end game and disable cells otherwise swap players
+        //if winner true, then log "won", end game and disable cells otherwise swap players
         if (winner) {
             gameOver = true;
             disableCells();
@@ -53,7 +52,7 @@ function handleClick(index) {
 }
 
 
-// Disable the click events on all cells after winner is determined
+// Disable the click events on all cells after game over
 function disableCells() {
     cells.forEach(cell => {
         cell.removeEventListener('click', handleClick); //removes event listener
@@ -76,11 +75,8 @@ function checkWinner() {
             break; // If O wins, no need to check further
         }
     }
-
     return isXWinner || isOWinner; //function returns true when either one is a winner
-
 }
-
 
 function resetGame() {
     gameOver = false;
