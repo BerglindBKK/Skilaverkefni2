@@ -7,7 +7,6 @@
 const board = document.getElementById('board');
 const status = document.getElementById('status');
 
-// currentPlayer set as let to be able to toggle between X and O
 let currentPlayer = 'O'; //starts with player O
 const gameBoard = Array(9).fill(null);
 const cells = []; // Store cell references
@@ -47,6 +46,7 @@ function handleClick(index) {
             document.getElementById('status').textContent = `Player ${currentPlayer} won!`;
         } else {
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            document.getElementById('status').textContent = `Player ${currentPlayer}'s turn`; //visual : whos turn is it
         }
     }
 }
